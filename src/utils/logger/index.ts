@@ -1,1 +1,1 @@
-export * as loggerUtils from "./loggerUtils";
+export { loggerUtils } from "./loggerUtils";
