@@ -81,7 +81,7 @@ readRedisReplicaClient.on("error", (error) => {
   );
 });
 
-const addPrefix = (key) => `${getPrefixKey()}${key}`;
+const addPrefix = (key: string) => `${getPrefixKey()}${key}`;
 
 export async function setKey(key: string, value: string, expiry: number) {
   try {
