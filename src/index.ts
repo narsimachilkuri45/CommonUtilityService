@@ -1,15 +1,30 @@
-export {
+import {
   redisUtils,
   kafkaUtils,
   mongoUtils,
   postgresUtils,
 } from "./utils/database";
 
-export { loggerUtils } from "./utils/logger";
+import { loggerUtils } from "./utils/logger";
 
-export { common, cacheTTL, httpStatusCodes } from "./constants";
+import { common, cacheTTL, httpStatusCodes } from "./constants";
 
-export { envUtils } from "./utils/config";
-export { jwtUtils } from "./utils/jwt";
-export { encryptionUtils } from "./utils/encryption";
-export { objectStorageUtils } from "./utils/objectStorage";
+import { envUtils } from "./utils/config";
+import { jwtUtils } from "./utils/jwt";
+import { encryptionUtils } from "./utils/encryption";
+import { objectStorageUtils } from "./utils/objectStorage";
+
+module.exports = {
+  redisUtils,
+  kafkaUtils,
+  mongoUtils,
+  postgresUtils,
+  loggerUtils,
+  common,
+  cacheTTL,
+  httpStatusCodes,
+  encryptionUtils,
+  envUtils,
+  jwtUtils,
+  objectStorageUtils,
+};
