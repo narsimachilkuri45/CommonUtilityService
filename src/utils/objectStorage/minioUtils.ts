@@ -1,5 +1,5 @@
 import { Client } from "minio";
-import loggerUtils from "../logger/loggerUtils";
+import { loggerUtils } from "../logger/loggerUtils";
 import {
   requireBooleanEnvVariable,
   requireNumberEnvVariable,

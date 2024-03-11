@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk";
-import loggerUtils from "../logger/loggerUtils";
+import { loggerUtils } from "../logger/loggerUtils";
 import { requireStringEnvVariable } from "../config/envUtils";
 
 const spacesClient = new S3({

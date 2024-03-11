@@ -10,7 +10,7 @@ import {
   getStringEnvVariableOrDefault,
   requireStringEnvVariable,
 } from "../config/envUtils";
-import loggerUtils from "../logger/loggerUtils";
+import { loggerUtils } from "../logger/loggerUtils";
 import fs from "fs";
 
 interface KafkaConfig {

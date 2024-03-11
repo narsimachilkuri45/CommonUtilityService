@@ -31,10 +31,8 @@ if (logToFile) {
   transportsArray.push(new winston.transports.File({ filename: logFile }));
 }
 
-const loggerUtils = winston.createLogger({
+export const loggerUtils = winston.createLogger({
   level: logLevel,
   format: winston.format.combine(winston.format.timestamp(), coloredFormatter),
   transports: transportsArray,
 });
-
-export default loggerUtils;

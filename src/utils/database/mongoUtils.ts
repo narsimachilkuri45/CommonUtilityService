@@ -1,6 +1,6 @@
 import mongoose, { Mongoose, ConnectOptions } from "mongoose";
 import { envUtils } from "../config";
-import loggerUtils from "../logger/loggerUtils";
+import { loggerUtils } from "../logger/loggerUtils";
 
 export async function connect(): Promise<Mongoose> {
   try {
