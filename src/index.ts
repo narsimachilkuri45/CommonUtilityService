@@ -14,7 +14,7 @@ import { jwtUtils } from "./utils/jwt";
 import { encryptionUtils } from "./utils/encryption";
 import { objectStorageUtils } from "./utils/objectStorage";
 
-module.exports = {
+export {
   redisUtils,
   kafkaUtils,
   mongoUtils,
@@ -23,8 +23,8 @@ module.exports = {
   common,
   cacheTTL,
   httpStatusCodes,
-  encryptionUtils,
   envUtils,
   jwtUtils,
+  encryptionUtils,
   objectStorageUtils,
 };
