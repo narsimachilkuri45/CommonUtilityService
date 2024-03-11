@@ -9,12 +9,7 @@ import loggerUtils from "./utils/logger/loggerUtils";
 import { envUtils } from "./utils/config";
 import { jwtUtils } from "./utils/jwt";
 import { encryptionUtils } from "./utils/encryption";
-import {
-  common,
-  cacheTTL,
-  mongoCollections,
-  httpStatusCodes,
-} from "./constants";
+import { common, cacheTTL, httpStatusCodes } from "./constants";
 
 export {
   redisUtils,
@@ -25,7 +20,6 @@ export {
   loggerUtils,
   envUtils,
   httpStatusCodes,
-  mongoCollections,
   encryptionUtils,
   jwtUtils,
   cacheTTL,
