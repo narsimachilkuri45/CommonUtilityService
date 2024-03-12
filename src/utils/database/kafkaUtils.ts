@@ -33,8 +33,7 @@ const brokers = getStringEnvVariableOrDefault(
 const kafkaConfig: KafkaConfig = {
   brokers: brokers.split(","),
   clientId: requireStringEnvVariable("COMMON_KAFKA_CLIENT_ID"),
-  logLevel:
-    logLevel[getStringEnvVariableOrDefault("COMMON_KAFKA_LOG_LEVEL", "error")],
+  logLevel: logLevel.ERROR,
 };
 
 const enableSSL = getBooleanEnvVariableOrDefault(

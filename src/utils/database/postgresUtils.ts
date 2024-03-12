@@ -1,10 +1,10 @@
-import { Pool, PoolConfig, QueryResult } from "pg";
+import { Pool, PoolConfig, QueryResult, QueryResultRow } from "pg";
 import {
   getStringEnvVariableOrDefault,
   getBooleanEnvVariableOrDefault,
   requireStringEnvVariable,
 } from "../config/envUtils";
-import loggerUtils from "../logger/loggerUtils";
+import { loggerUtils } from "../logger/loggerUtils";
 import fs from "fs";
 
 const postgresConfig: PoolConfig = {
@@ -34,7 +34,7 @@ const postgresConfig: PoolConfig = {
 
 const pool = new Pool(postgresConfig);
 
-export async function query<T = any>(
+export async function query<T extends QueryResultRow = any>(
   text: string,
   values?: any[]
 ): Promise<QueryResult<T>> {

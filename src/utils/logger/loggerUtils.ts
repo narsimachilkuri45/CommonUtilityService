@@ -1,6 +1,13 @@
 import winston from "winston";
 
-const colors = {
+interface LogColors {
+  info: string;
+  debug: string;
+  warn: string;
+  error: string;
+}
+
+const colors: LogColors = {
   info: "\x1b[32m",
   debug: "\x1b[36m",
   warn: "\x1b[33m",
@@ -11,7 +18,7 @@ const resetColor = "\x1b[0m";
 
 const coloredFormatter = winston.format.printf(
   ({ level, message, timestamp }) => {
-    const color = colors[level] || "";
+    const color = colors[level as keyof LogColors] || "";
     return `${color}[${timestamp}] [${level.toUpperCase()}]${resetColor} ${message}`;
   }
 );
