@@ -1,18 +1,27 @@
-export { envUtils } from "./utils/config";
-
-export { jwtUtils } from "./utils/jwt";
-
-export { objectStorageUtils } from "./utils/objectStorage";
-
-export {
+import { envUtils } from "./utils/config";
+import { jwtUtils } from "./utils/jwt";
+import { objectStorageUtils } from "./utils/objectStorage";
+import {
   redisUtils,
   kafkaUtils,
   mongoUtils,
   postgresUtils,
 } from "./utils/database";
+import { loggerUtils } from "./utils/logger";
+import { common, cacheTTL, httpStatusCodes } from "./constants";
+import { encryptionUtils } from "./utils/encryption";
 
-export { loggerUtils } from "./utils/logger";
-
-export { common, cacheTTL, httpStatusCodes } from "./constants";
-
-export { encryptionUtils } from "./utils/encryption";
+module.exports = {
+  envUtils,
+  jwtUtils,
+  objectStorageUtils,
+  redisUtils,
+  kafkaUtils,
+  mongoUtils,
+  postgresUtils,
+  loggerUtils,
+  common,
+  cacheTTL,
+  httpStatusCodes,
+  encryptionUtils,
+};
