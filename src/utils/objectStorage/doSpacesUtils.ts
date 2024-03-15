@@ -1,11 +1,11 @@
 import { S3 } from "aws-sdk";
 import { loggerUtils } from "../logger/loggerUtils";
-import { requireStringEnvVariable } from "../config/envUtils";
+import { getStringEnvVariable } from "../config/envUtils";
 
 const spacesClient = new S3({
-  endpoint: requireStringEnvVariable("COMMON_DO_SPACES_ENDPOINT"),
-  accessKeyId: requireStringEnvVariable("COMMON_DO_SPACES_ACCESS_KEY"),
-  secretAccessKey: requireStringEnvVariable("COMMON_DO_SPACES_SECRET_KEY"),
+  endpoint: getStringEnvVariable("COMMON_DO_SPACES_ENDPOINT"),
+  accessKeyId: getStringEnvVariable("COMMON_DO_SPACES_ACCESS_KEY"),
+  secretAccessKey: getStringEnvVariable("COMMON_DO_SPACES_SECRET_KEY"),
 });
 
 export async function listBucket(): Promise<any> {

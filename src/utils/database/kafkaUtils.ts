@@ -8,7 +8,6 @@ import {
 import {
   getBooleanEnvVariableOrDefault,
   getStringEnvVariableOrDefault,
-  requireStringEnvVariable,
 } from "../config/envUtils";
 import { loggerUtils } from "../logger/loggerUtils";
 import fs from "fs";
@@ -32,7 +31,10 @@ const brokers = getStringEnvVariableOrDefault(
 
 const kafkaConfig: KafkaConfig = {
   brokers: brokers.split(","),
-  clientId: requireStringEnvVariable("COMMON_KAFKA_CLIENT_ID"),
+  clientId: getStringEnvVariableOrDefault(
+    "COMMON_KAFKA_CLIENT_ID",
+    "CommonUtilityService"
+  ),
   logLevel: logLevel.ERROR,
 };
 
@@ -47,9 +49,17 @@ if (enableSSL) {
       "COMMON_KAFKA_REJECT_UNAUTHORIZED",
       true
     ),
-    ca: [fs.readFileSync(requireStringEnvVariable("COMMON_KAFKA_CA_PATH"))],
-    key: fs.readFileSync(requireStringEnvVariable("COMMON_KAFKA_KEY_PATH")),
-    cert: fs.readFileSync(requireStringEnvVariable("COMMON_KAFKA_CERT_PATH")),
+    ca: [
+      fs.readFileSync(
+        getStringEnvVariableOrDefault("COMMON_KAFKA_CA_PATH", "")
+      ),
+    ],
+    key: fs.readFileSync(
+      getStringEnvVariableOrDefault("COMMON_KAFKA_KEY_PATH", "")
+    ),
+    cert: fs.readFileSync(
+      getStringEnvVariableOrDefault("COMMON_KAFKA_CERT_PATH", "")
+    ),
   };
 }
 
@@ -76,19 +86,22 @@ if (enableProducer) {
     .then(async () => {
       loggerUtils.info("kafkaUtils :: Producer :: Connected");
 
-      const predefinedTopics = requireStringEnvVariable(
-        "COMMON_KAFKA_PREDEFINED_TOPICS"
+      const predefinedTopics = getStringEnvVariableOrDefault(
+        "COMMON_KAFKA_PREDEFINED_TOPICS",
+        ""
       );
 
-      loggerUtils.debug(
-        `kafkaUtils :: Producer :: Predefined topics configured ${predefinedTopics}, Creating Predefined Topics`
-      );
+      if (predefinedTopics) {
+        loggerUtils.debug(
+          `kafkaUtils :: Producer :: Predefined topics configured ${predefinedTopics}, Creating Predefined Topics`
+        );
 
-      const topicsList = predefinedTopics
-        .split(",")
-        .map((topic) => ({ topic }));
+        const topicsList = predefinedTopics
+          .split(",")
+          .map((topic) => ({ topic }));
 
-      await createTopicIfNotExists(topicsList);
+        await createTopicIfNotExists(topicsList);
+      }
     })
     .catch((error) => {
       loggerUtils.error(
@@ -100,7 +113,10 @@ if (enableProducer) {
 
 if (enableConsumer) {
   consumer = kafka.consumer({
-    groupId: requireStringEnvVariable("COMMON_KAFKA_CONSUMER_GROUP_ID"),
+    groupId: getStringEnvVariableOrDefault(
+      "COMMON_KAFKA_CONSUMER_GROUP_ID",
+      "CommonUtilityService"
+    ),
   });
 
   consumer

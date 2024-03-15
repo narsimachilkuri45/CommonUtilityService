@@ -1,4 +1,4 @@
-export default {
+export const CACHE_TTL = {
   CACHE_TTL_1_MINUTE: 60,
   CACHE_TTL_5_MINUTES: 60 * 5,
   CACHE_TTL_15_MINUTES: 60 * 15,

@@ -1,11 +1,12 @@
 import { S3 } from "aws-sdk";
 import { loggerUtils } from "../logger/loggerUtils";
-import { requireStringEnvVariable } from "../config/envUtils";
+import { getStringEnvVariableOrDefault } from "../config/envUtils";
 
 const s3Client = new S3({
-  endpoint: requireStringEnvVariable("COMMON_S3_ENDPOINT"),
-  accessKeyId: requireStringEnvVariable("COMMON_S3_ACCESS_KEY"),
-  secretAccessKey: requireStringEnvVariable("COMMON_S3_SECRET_KEY"),
+  endpoint: getStringEnvVariableOrDefault("COMMON_S3_ENDPOINT", ""),
+  accessKeyId: getStringEnvVariableOrDefault("COMMON_S3_ACCESS_KEY", ""),
+  secretAccessKey: getStringEnvVariableOrDefault("COMMON_S3_SECRET_KEY", ""),
+  region: getStringEnvVariableOrDefault("COMMON_S3_REGION", "ap-south-1"),
 });
 
 export async function listBucket(): Promise<any> {

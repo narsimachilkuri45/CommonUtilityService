@@ -1,17 +1,17 @@
 import { Client } from "minio";
 import { loggerUtils } from "../logger/loggerUtils";
 import {
-  requireBooleanEnvVariable,
-  requireNumberEnvVariable,
-  requireStringEnvVariable,
+  getBooleanEnvVariableOrDefault,
+  getNumberEnvVariableOrDefault,
+  getStringEnvVariableOrDefault,
 } from "../config/envUtils";
 
 const minioClient = new Client({
-  endPoint: requireStringEnvVariable("COMMON_MINIO_ENDPOINT"),
-  port: requireNumberEnvVariable("COMMON_MINIO_PORT"),
-  useSSL: requireBooleanEnvVariable("COMMON_MINIO_ENABLE_SSL"),
-  accessKey: requireStringEnvVariable("COMMON_MINIO_ACCESS_KEY"),
-  secretKey: requireStringEnvVariable("COMMON_MINIO_SECRET_KEY"),
+  endPoint: getStringEnvVariableOrDefault("COMMON_MINIO_ENDPOINT", ""),
+  port: getNumberEnvVariableOrDefault("COMMON_MINIO_PORT", 9000),
+  useSSL: getBooleanEnvVariableOrDefault("COMMON_MINIO_ENABLE_SSL", false),
+  accessKey: getStringEnvVariableOrDefault("COMMON_MINIO_ACCESS_KEY", ""),
+  secretKey: getStringEnvVariableOrDefault("COMMON_MINIO_SECRET_KEY", ""),
 });
 
 export async function listBucket(): Promise<any> {

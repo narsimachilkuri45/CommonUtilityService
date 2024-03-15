@@ -1,8 +1,7 @@
-import { Pool, PoolConfig, QueryResult, QueryResultRow } from "pg";
+import { Pool, PoolConfig, QueryResult } from "pg";
 import {
   getStringEnvVariableOrDefault,
   getBooleanEnvVariableOrDefault,
-  requireStringEnvVariable,
 } from "../config/envUtils";
 import { loggerUtils } from "../logger/loggerUtils";
 import fs from "fs";
@@ -20,13 +19,15 @@ const postgresConfig: PoolConfig = {
           true
         ),
         ca: [
-          fs.readFileSync(requireStringEnvVariable("COMMON_POSTGRES_CA_PATH")),
+          fs.readFileSync(
+            getStringEnvVariableOrDefault("COMMON_POSTGRES_CA_PATH", "")
+          ),
         ],
         key: fs.readFileSync(
-          requireStringEnvVariable("COMMON_POSTGRES_KEY_PATH")
+          getStringEnvVariableOrDefault("COMMON_POSTGRES_KEY_PATH", "")
         ),
         cert: fs.readFileSync(
-          requireStringEnvVariable("COMMON_POSTGRES_CERT_PATH")
+          getStringEnvVariableOrDefault("COMMON_POSTGRES_CERT_PATH", "")
         ),
       }
     : false,
@@ -34,7 +35,7 @@ const postgresConfig: PoolConfig = {
 
 const pool = new Pool(postgresConfig);
 
-export async function query<T extends QueryResultRow = any>(
+export async function query<T extends QueryResult = any>(
   text: string,
   values?: any[]
 ): Promise<QueryResult<T>> {
@@ -56,10 +57,23 @@ export async function query<T extends QueryResultRow = any>(
   }
 }
 
+export async function connectPool(): Promise<void> {
+  try {
+    await pool.connect();
+    loggerUtils.info("postgresUtils :: connectPool :: PostgreSQL Pool");
+  } catch (error) {
+    loggerUtils.error(
+      "postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ",
+      error
+    );
+    throw error;
+  }
+}
+
 export async function closePool(): Promise<void> {
   try {
     await pool.end();
-    loggerUtils.debug(
+    loggerUtils.info(
       "postgresUtils :: closePool :: PostgreSQL connection pool closed"
     );
   } catch (error) {

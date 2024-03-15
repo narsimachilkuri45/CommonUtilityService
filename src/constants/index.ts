@@ -1,3 +1,4 @@
-export * as cacheTTL from "./cacheTTL";
+export { ERROR_MESSAGES } from "./errorMessages";
+export { CACHE_TTL } from "./cacheTTL";
 export * as common from "./common";
-export * as httpStatusCodes from "./httpStatusCodes";
+export { HTTP_STATUS_CODES } from "./httpStatusCodes";
