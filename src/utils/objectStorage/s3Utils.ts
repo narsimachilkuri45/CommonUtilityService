@@ -16,8 +16,7 @@ export async function listBucket(): Promise<any> {
     return buckets;
   } catch (error) {
     loggerUtils.error(
-      "s3Utils :: listBucket :: Error retrieving buckets:",
-      error
+      `s3Utils :: listBucket :: Error retrieving buckets :: ${error}`
     );
     throw error;
   }
@@ -31,8 +30,7 @@ export async function makeBucket(bucketName: string): Promise<any> {
     );
   } catch (error) {
     loggerUtils.error(
-      `s3Utils :: makeBucket :: Error creating bucket "${bucketName}":`,
-      error
+      `s3Utils :: makeBucket :: Error creating bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -47,8 +45,7 @@ export async function getObject(
     return await s3Client.getObject(params).promise();
   } catch (error) {
     loggerUtils.error(
-      `s3Utils :: getObject :: Error getting object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `s3Utils :: getObject :: Error getting object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -67,8 +64,7 @@ export async function putObject(
     );
   } catch (error) {
     loggerUtils.error(
-      `s3Utils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}":`,
-      error
+      `s3Utils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -84,8 +80,7 @@ export async function presignedGetObject(
     return s3Client.getSignedUrlPromise("getObject", params);
   } catch (error) {
     loggerUtils.error(
-      `s3Utils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `s3Utils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }

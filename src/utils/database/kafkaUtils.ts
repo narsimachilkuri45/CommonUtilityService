@@ -105,8 +105,7 @@ if (enableProducer) {
     })
     .catch((error) => {
       loggerUtils.error(
-        "kafkaUtils :: Producer :: Error connecting Kafka producer:",
-        error
+        `kafkaUtils :: Producer :: Error connecting Kafka producer :: ${error}`
       );
     });
 }
@@ -126,8 +125,7 @@ if (enableConsumer) {
     })
     .catch((error) => {
       loggerUtils.error(
-        "kafkaUtils :: Consumer :: Error connecting Kafka consumer:",
-        error
+        `kafkaUtils :: Consumer :: Error connecting Kafka consumer :: ${error}`
       );
     });
 }
@@ -226,7 +224,9 @@ async function createTopicIfNotExists(
 
     await Promise.all(promises);
   } catch (error) {
-    loggerUtils.error("kafkaUtils :: Producer :: Error creating topic:", error);
+    loggerUtils.error(
+      `kafkaUtils :: Producer :: Error creating topic :: ${error}`
+    );
   } finally {
     await kafka.admin().disconnect();
   }

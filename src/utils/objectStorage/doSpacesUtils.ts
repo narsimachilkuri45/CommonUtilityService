@@ -17,8 +17,7 @@ export async function listBucket(): Promise<any> {
     return buckets;
   } catch (error) {
     loggerUtils.error(
-      "doSpacesUtils :: listBucket :: Error retrieving buckets:",
-      error
+      `doSpacesUtils :: listBucket :: Error retrieving buckets :: ${error}`
     );
     throw error;
   }
@@ -32,8 +31,7 @@ export async function makeBucket(bucketName: string): Promise<any> {
     );
   } catch (error) {
     loggerUtils.error(
-      `doSpacesUtils :: makeBucket :: Error creating bucket "${bucketName}":`,
-      error
+      `doSpacesUtils :: makeBucket :: Error creating bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -48,8 +46,7 @@ export async function getObject(
     return await spacesClient.getObject(params).promise();
   } catch (error) {
     loggerUtils.error(
-      `spacesUtils :: getObject :: Error getting object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `spacesUtils :: getObject :: Error getting object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -68,8 +65,7 @@ export async function putObject(
     );
   } catch (error) {
     loggerUtils.error(
-      `spacesUtils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}":`,
-      error
+      `spacesUtils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -85,8 +81,7 @@ export async function presignedGetObject(
     return spacesClient.getSignedUrlPromise("getObject", params);
   } catch (error) {
     loggerUtils.error(
-      `spacesUtils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `spacesUtils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }

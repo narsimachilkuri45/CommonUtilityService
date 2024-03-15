@@ -10,7 +10,10 @@ const postgresConfig: PoolConfig = {
   user: getStringEnvVariableOrDefault("COMMON_POSTGRES_USER", "postgres"),
   host: getStringEnvVariableOrDefault("COMMON_POSTGRES_HOST", "localhost"),
   database: getStringEnvVariableOrDefault("COMMON_POSTGRES_DB", "postgres"),
-  password: getStringEnvVariableOrDefault("COMMON_POSTGRES_PASSWORD", ""),
+  password: getStringEnvVariableOrDefault(
+    "COMMON_POSTGRES_PASSWORD",
+    "password"
+  ),
   port: parseInt(getStringEnvVariableOrDefault("COMMON_POSTGRES_PORT", "5432")),
   ssl: getBooleanEnvVariableOrDefault("COMMON_POSTGRES_ENABLE_SSL", false)
     ? {
@@ -50,8 +53,7 @@ export async function query<T extends QueryResult = any>(
     return result;
   } catch (error) {
     loggerUtils.error(
-      "postgresUtils :: query :: Error executing query :: ",
-      error
+      `postgresUtils :: query :: Error executing query :: ${error}`
     );
     throw error;
   }
@@ -63,8 +65,7 @@ export async function connectPool(): Promise<void> {
     loggerUtils.info("postgresUtils :: connectPool :: PostgreSQL Pool");
   } catch (error) {
     loggerUtils.error(
-      "postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ",
-      error
+      `postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ${error}`
     );
     throw error;
   }
@@ -78,8 +79,7 @@ export async function closePool(): Promise<void> {
     );
   } catch (error) {
     loggerUtils.error(
-      "postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ",
-      error
+      `postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ${error}`
     );
     throw error;
   }

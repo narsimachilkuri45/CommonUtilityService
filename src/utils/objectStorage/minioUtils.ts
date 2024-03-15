@@ -1,21 +1,28 @@
-import { Client } from "minio";
 import { loggerUtils } from "../logger/loggerUtils";
 import {
   getBooleanEnvVariableOrDefault,
   getNumberEnvVariableOrDefault,
   getStringEnvVariableOrDefault,
 } from "../config/envUtils";
+import { Client } from "minio";
 
-const minioClient = new Client({
-  endPoint: getStringEnvVariableOrDefault("COMMON_MINIO_ENDPOINT", ""),
-  port: getNumberEnvVariableOrDefault("COMMON_MINIO_PORT", 9000),
-  useSSL: getBooleanEnvVariableOrDefault("COMMON_MINIO_ENABLE_SSL", false),
-  accessKey: getStringEnvVariableOrDefault("COMMON_MINIO_ACCESS_KEY", ""),
-  secretKey: getStringEnvVariableOrDefault("COMMON_MINIO_SECRET_KEY", ""),
-});
+let minioClient: Client | null = null;
+
+if (getBooleanEnvVariableOrDefault("COMMON_ENABLE_MINIO", false)) {
+  minioClient = new Client({
+    endPoint: getStringEnvVariableOrDefault("COMMON_MINIO_ENDPOINT", ""),
+    port: getNumberEnvVariableOrDefault("COMMON_MINIO_PORT", 9000),
+    useSSL: getBooleanEnvVariableOrDefault("COMMON_MINIO_ENABLE_SSL", false),
+    accessKey: getStringEnvVariableOrDefault("COMMON_MINIO_ACCESS_KEY", ""),
+    secretKey: getStringEnvVariableOrDefault("COMMON_MINIO_SECRET_KEY", ""),
+  });
+}
 
 export async function listBucket(): Promise<any> {
   try {
+    if (!minioClient) {
+      throw new Error("Minio client is not initialized.");
+    }
     const buckets = await minioClient.listBuckets();
     loggerUtils.info(
       "minioUtils :: listBucket :: Retrieved buckets successfully"
@@ -23,8 +30,7 @@ export async function listBucket(): Promise<any> {
     return buckets;
   } catch (error) {
     loggerUtils.error(
-      "minioUtils :: listBucket :: Error retrieving buckets:",
-      error
+      `minioUtils :: listBucket :: Error retrieving buckets :: ${error}`
     );
     throw error;
   }
@@ -32,14 +38,16 @@ export async function listBucket(): Promise<any> {
 
 export async function makeBucket(bucketName: string): Promise<any> {
   try {
+    if (!minioClient) {
+      throw new Error("Minio client is not initialized.");
+    }
     await minioClient.makeBucket(bucketName);
     loggerUtils.info(
       `minioUtils :: makeBucket :: Created bucket "${bucketName}" successfully`
     );
   } catch (error) {
     loggerUtils.error(
-      `minioUtils :: makeBucket :: Error creating bucket "${bucketName}":`,
-      error
+      `minioUtils :: makeBucket :: Error creating bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -50,17 +58,24 @@ export async function getObject(
   objectName: string
 ): Promise<any> {
   try {
+    if (!minioClient) {
+      throw new Error("Minio client is not initialized.");
+    }
     const chunks: Buffer[] = [];
     await new Promise((resolve, reject) => {
-      minioClient.getObject(bucketName, objectName, (err: any, stream: any) => {
-        if (err) {
-          reject(err);
-          return;
+      minioClient?.getObject(
+        bucketName,
+        objectName,
+        (err: any, stream: any) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          stream.on("data", (chunk: any) => chunks.push(chunk));
+          stream.on("end", () => resolve(Buffer.concat(chunks)));
+          stream.on("error", (err: any) => reject(err));
         }
-        stream.on("data", (chunk: any) => chunks.push(chunk));
-        stream.on("end", () => resolve(Buffer.concat(chunks)));
-        stream.on("error", (err: any) => reject(err));
-      });
+      );
     });
     loggerUtils.info(
       `minioUtils :: getObject :: Retrieved object "${objectName}" from bucket "${bucketName}" successfully`
@@ -68,8 +83,7 @@ export async function getObject(
     return Buffer.concat(chunks);
   } catch (error) {
     loggerUtils.error(
-      `minioUtils :: getObject :: Error retrieving object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `minioUtils :: getObject :: Error retrieving object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -81,14 +95,16 @@ export async function putObject(
   data: any
 ): Promise<any> {
   try {
+    if (!minioClient) {
+      throw new Error("Minio client is not initialized.");
+    }
     await minioClient.putObject(bucketName, objectName, data);
     loggerUtils.info(
       `minioUtils :: putObject :: Successfully put object "${objectName}" to bucket "${bucketName}"`
     );
   } catch (error) {
     loggerUtils.error(
-      `minioUtils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}":`,
-      error
+      `minioUtils :: putObject :: Error putting object "${objectName}" to bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }
@@ -100,11 +116,13 @@ export async function presignedGetObject(
   expiry: number = 3600
 ): Promise<string> {
   try {
+    if (!minioClient) {
+      throw new Error("Minio client is not initialized.");
+    }
     return await minioClient.presignedGetObject(bucketName, objectName, expiry);
   } catch (error) {
     loggerUtils.error(
-      `minioUtils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}":`,
-      error
+      `minioUtils :: presignedGetObject :: Error generating presigned URL for object "${objectName}" from bucket "${bucketName}" :: ${error}`
     );
     throw error;
   }

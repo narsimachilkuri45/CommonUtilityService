@@ -71,13 +71,13 @@ readRedisReplicaClient.on("connect", () => {
 
 primaryRedisClient.on("error", (error) => {
   loggerUtils.error(
-    `redisUtils :: Error connecting to Primary Redis server: ${error}`
+    `redisUtils :: Error connecting to Primary Redis server :: ${error}`
   );
 });
 
 readRedisReplicaClient.on("error", (error) => {
   loggerUtils.error(
-    `redisUtils :: Error connecting to Read Replica Redis server: ${error}`
+    `redisUtils :: Error connecting to Read Replica Redis server :: ${error}`
   );
 });
 
@@ -92,7 +92,7 @@ export async function setKey(key: string, value: string, expiry: number) {
     }
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error setting Redis key: ${key}, Error: ${error}`
+      `redisUtils :: Error setting Redis key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -106,7 +106,7 @@ export async function getKey(key: string) {
     );
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error getting Redis key: ${key}, Error: ${error}`
+      `redisUtils :: Error getting Redis key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -120,7 +120,7 @@ export async function keys(pattern: string) {
     );
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error getting Redis keys with pattern: ${pattern}, Error: ${error}`
+      `redisUtils :: Error getting Redis keys with pattern: ${pattern}, Error :: ${error}`
     );
     throw error;
   }
@@ -142,7 +142,7 @@ export async function delKey(pattern: string) {
     return await primaryRedisClient.del(addPrefix(pattern));
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error deleting Redis keys: ${pattern}, Error: ${error}`
+      `redisUtils :: Error deleting Redis keys: ${pattern}, Error :: ${error}`
     );
     throw error;
   }
@@ -153,7 +153,7 @@ export async function lPushKey(key: string, value: string) {
     return await primaryRedisClient.lPush(addPrefix(key), value);
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error pushing to Redis list with key: ${key}, Error: ${error}`
+      `redisUtils :: Error pushing to Redis list with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -168,7 +168,7 @@ export async function incrementKey(key: string, threshold: number = 0) {
     }
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error Incrementing from Redis with key: ${key}, Error: ${error}`
+      `redisUtils :: Error Incrementing from Redis with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -183,7 +183,7 @@ export async function decrementKey(key: string, threshold: number = 0) {
     }
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error Decrementing from Redis with key: ${key}, Error: ${error}`
+      `redisUtils :: Error Decrementing from Redis with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -194,7 +194,7 @@ export async function lRemKey(key: string, count: number, value: string) {
     return await primaryRedisClient.lRem(addPrefix(key), count, value);
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error removing from Redis list with key: ${key}, Error: ${error}`
+      `redisUtils :: Error removing from Redis list with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -208,7 +208,7 @@ export async function lRangeKey(key: string, start: number, stop: number) {
     );
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error getting range from Redis list with key: ${key}, Error: ${error}`
+      `redisUtils :: Error getting range from Redis list with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -223,7 +223,7 @@ export async function hIncrbyKey(
     return await primaryRedisClient.hIncrBy(addPrefix(key), field, increment);
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error incrementing field in Redis hash with key: ${key}, Error: ${error}`
+      `redisUtils :: Error incrementing field in Redis hash with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -237,7 +237,7 @@ export async function hGetallKey(key: string) {
     );
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error getting all fields from Redis hash with key: ${key}, Error: ${error}`
+      `redisUtils :: Error getting all fields from Redis hash with key: ${key}, Error :: ${error}`
     );
     throw error;
   }
@@ -251,7 +251,7 @@ export async function ttlKey(key: string) {
     );
   } catch (error) {
     loggerUtils.error(
-      `redisUtils :: Error getting all fields from Redis hash with key: ${key}, Error: ${error}`
+      `redisUtils :: Error getting all fields from Redis hash with key: ${key}, Error :: ${error}`
     );
     throw error;
   }

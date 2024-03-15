@@ -50,8 +50,7 @@ export async function connect(): Promise<Mongoose> {
     return mongooseInstance;
   } catch (error) {
     loggerUtils.error(
-      "mongoUtils :: connect :: Error connecting to MongoDB :: ",
-      error
+      `mongoUtils :: connect :: Error connecting to MongoDB :: ${error}`
     );
     throw error;
   }
@@ -63,8 +62,7 @@ export async function disconnect(mongooseInstance: Mongoose): Promise<void> {
     loggerUtils.info("mongoUtils :: disconnect :: Disconnected from MongoDB");
   } catch (error) {
     loggerUtils.error(
-      "mongoUtils :: disconnect :: Error disconnecting to MongoDB :: ",
-      error
+      `mongoUtils :: disconnect :: Error disconnecting to MongoDB :: ${error}`
     );
     throw error;
   }
