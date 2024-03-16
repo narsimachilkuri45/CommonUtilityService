@@ -1,4 +1,8 @@
 import winston from "winston";
+import {
+  getBooleanEnvVariableOrDefault,
+  getStringEnvVariableOrDefault,
+} from "../config/envUtils";
 
 interface LogColors {
   info: string;
@@ -19,14 +23,20 @@ const resetColor = "\x1b[0m";
 const coloredFormatter = winston.format.printf(
   ({ level, message, timestamp }) => {
     const color = colors[level as keyof LogColors] || "";
-    return `${color}[${timestamp}] [${level.toUpperCase()}]${resetColor} ${message}`;
+    return `${color}[${timestamp}] ${level.toUpperCase()}${resetColor} - ${message}`;
   }
 );
 
-const logLevel = process.env.LOG_LEVEL || "info";
-const logToConsole = process.env.LOG_TO_CONSOLE === "true";
-const logToFile = process.env.LOG_TO_FILE === "true";
-const logFile = process.env.LOG_FILE || "app.log";
+const logLevel = getStringEnvVariableOrDefault("COMMON_LOG_LEVEL", "info");
+const logToConsole = getBooleanEnvVariableOrDefault(
+  "COMMON_LOG_TO_CONSOLE",
+  true
+);
+const logToFile = getBooleanEnvVariableOrDefault("COMMON_LOG_TO_FILE", false);
+const logFile = getStringEnvVariableOrDefault(
+  "COMMON_LOG_FILE_NAME",
+  "app.log"
+);
 
 let transportsArray: winston.transport[] = [];
 
