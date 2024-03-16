@@ -62,7 +62,9 @@ export async function query<T extends QueryResult = any>(
 export async function connectPool(): Promise<void> {
   try {
     await pool.connect();
-    loggerUtils.info("postgresUtils :: connectPool :: PostgreSQL Pool");
+    loggerUtils.info(
+      "postgresUtils :: connectPool :: PostgreSQL Connection Pool Connected"
+    );
   } catch (error) {
     loggerUtils.error(
       `postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ${error}`
@@ -75,7 +77,7 @@ export async function closePool(): Promise<void> {
   try {
     await pool.end();
     loggerUtils.info(
-      "postgresUtils :: closePool :: PostgreSQL connection pool closed"
+      "postgresUtils :: closePool :: PostgreSQL Connection Pool Closed"
     );
   } catch (error) {
     loggerUtils.error(
