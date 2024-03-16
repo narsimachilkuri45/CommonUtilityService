@@ -8,3 +8,7 @@ export function generateJwt(payload: any): string {
 export function verifyJwt(token: string): any {
   return jwt.verify(token, JWT_SECRET);
 }
+
+export function getSecret(): string {
+  return JWT_SECRET;
+}

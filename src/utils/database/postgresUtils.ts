@@ -95,26 +95,30 @@ export async function runMigrations<
   T extends QueryResult = any
 >(): Promise<void> {
   try {
-    const migrationPath = getStringEnvVariable(
-      "COMMON_POSTGRES_MIGRATION_PATH"
-    );
+    if (
+      getBooleanEnvVariableOrDefault("COMMON_POSTGRES_ENABLE_MIGRATIONS", false)
+    ) {
+      const migrationPath = getStringEnvVariable(
+        "COMMON_POSTGRES_MIGRATION_PATH"
+      );
 
-    if (migrationPath) {
-      const files = fs.readdirSync(migrationPath);
-      for (const file of files) {
-        const filePath = path.join(migrationPath, file);
-        const sql = fs.readFileSync(filePath, "utf-8");
+      if (migrationPath) {
+        const files = fs.readdirSync(migrationPath);
+        for (const file of files) {
+          const filePath = path.join(migrationPath, file);
+          const sql = fs.readFileSync(filePath, "utf-8");
 
-        await pool.query<T>(sql);
+          await pool.query<T>(sql);
 
-        loggerUtils.debug(
-          `postgresUtils :: runMigrations :: Migrated: ${filePath}`
+          loggerUtils.debug(
+            `postgresUtils :: runMigrations :: Migrated: ${filePath}`
+          );
+        }
+
+        loggerUtils.info(
+          "postgresUtils :: runMigrations :: All migrations executed successfully."
         );
       }
-
-      loggerUtils.info(
-        "postgresUtils :: runMigrations :: All migrations executed successfully."
-      );
     }
   } catch (error) {
     loggerUtils.error(
