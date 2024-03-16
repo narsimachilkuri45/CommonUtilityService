@@ -9,9 +9,12 @@ import fs from "fs";
 import path from "path";
 
 const postgresConfig: PoolConfig = {
-  user: getStringEnvVariableOrDefault("COMMON_POSTGRES_USER", "postgres"),
+  user: getStringEnvVariableOrDefault("COMMON_POSTGRES_USERNAME", "postgres"),
   host: getStringEnvVariableOrDefault("COMMON_POSTGRES_HOST", "localhost"),
-  database: getStringEnvVariableOrDefault("COMMON_POSTGRES_DB", "postgres"),
+  database: getStringEnvVariableOrDefault(
+    "COMMON_POSTGRES_DATABASE",
+    "postgres"
+  ),
   password: getStringEnvVariableOrDefault(
     "COMMON_POSTGRES_PASSWORD",
     "password"
@@ -89,18 +92,18 @@ export async function closePool(): Promise<void> {
   }
 }
 
-export async function runMigrations(directoryPath: string): Promise<void> {
+export async function runMigrations(): Promise<void> {
   try {
     const migrationPath = getStringEnvVariable(
       "COMMON_POSTGRES_MIGRATION_PATH"
-    ) as string;
+    );
 
     if (migrationPath) {
       const files = fs.readdirSync(migrationPath);
-
       for (const file of files) {
-        const filePath = path.join(directoryPath, file);
+        const filePath = path.join(migrationPath, file);
         const sql = fs.readFileSync(filePath, "utf-8");
+        console.log(sql);
         await query(sql);
 
         loggerUtils.debug(

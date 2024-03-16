@@ -20,7 +20,7 @@ export async function connect(): Promise<Mongoose> {
       autoIndex: true,
       autoCreate: true,
       dbName: envUtils.getStringEnvVariableOrDefault(
-        "COMMON_MONGODB_DB",
+        "COMMON_MONGODB_DATABASE",
         "admin"
       ),
     };
