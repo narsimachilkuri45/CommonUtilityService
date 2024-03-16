@@ -2,9 +2,11 @@ import { Pool, PoolConfig, QueryResult } from "pg";
 import {
   getStringEnvVariableOrDefault,
   getBooleanEnvVariableOrDefault,
+  getStringEnvVariable,
 } from "../config/envUtils";
 import { loggerUtils } from "../logger/loggerUtils";
 import fs from "fs";
+import path from "path";
 
 const postgresConfig: PoolConfig = {
   user: getStringEnvVariableOrDefault("COMMON_POSTGRES_USER", "postgres"),
@@ -82,6 +84,37 @@ export async function closePool(): Promise<void> {
   } catch (error) {
     loggerUtils.error(
       `postgresUtils :: closePool :: Error closing PostgreSQL connection pool :: ${error}`
+    );
+    throw error;
+  }
+}
+
+export async function runMigrations(directoryPath: string): Promise<void> {
+  try {
+    const migrationPath = getStringEnvVariable(
+      "COMMON_POSTGRES_MIGRATION_PATH"
+    ) as string;
+
+    if (migrationPath) {
+      const files = fs.readdirSync(migrationPath);
+
+      for (const file of files) {
+        const filePath = path.join(directoryPath, file);
+        const sql = fs.readFileSync(filePath, "utf-8");
+        await query(sql);
+
+        loggerUtils.debug(
+          `postgresUtils :: runMigrations :: Migrated: ${filePath}`
+        );
+      }
+
+      loggerUtils.info(
+        "postgresUtils :: runMigrations :: All migrations executed successfully."
+      );
+    }
+  } catch (error) {
+    loggerUtils.error(
+      `postgresUtils :: runMigrations :: Error executing migrations :: ${error}`
     );
     throw error;
   }
