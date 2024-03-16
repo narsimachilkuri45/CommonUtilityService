@@ -2,6 +2,8 @@ import mongoose, { Mongoose, ConnectOptions } from "mongoose";
 import { envUtils } from "../config";
 import { loggerUtils } from "../logger/loggerUtils";
 
+let mongooseInstance: Mongoose | null = null;
+
 export async function connect(): Promise<Mongoose> {
   try {
     const host = envUtils.getStringEnvVariableOrDefault(
@@ -45,8 +47,8 @@ export async function connect(): Promise<Mongoose> {
       options.tlsCertificateKeyFile = tlsCertificateKeyFile;
     }
 
-    const mongooseInstance = await mongoose.connect(connectionURI, options);
-    loggerUtils.info("mongoUtils :: connect :: Connected from MongoDB");
+    mongooseInstance = await mongoose.connect(connectionURI, options);
+    loggerUtils.info("mongoUtils :: connect :: Connected to MongoDB");
     return mongooseInstance;
   } catch (error) {
     loggerUtils.error(
@@ -56,13 +58,26 @@ export async function connect(): Promise<Mongoose> {
   }
 }
 
-export async function disconnect(mongooseInstance: Mongoose): Promise<void> {
+export async function disconnect(): Promise<void> {
   try {
-    await mongooseInstance.disconnect();
-    loggerUtils.info("mongoUtils :: disconnect :: Disconnected from MongoDB");
+    if (mongooseInstance) {
+      await mongooseInstance.disconnect();
+      loggerUtils.info("mongoUtils :: disconnect :: Disconnected from MongoDB");
+    }
   } catch (error) {
     loggerUtils.error(
       `mongoUtils :: disconnect :: Error disconnecting to MongoDB :: ${error}`
+    );
+    throw error;
+  }
+}
+
+export function getConnection(): Mongoose | null {
+  try {
+    return mongooseInstance;
+  } catch (error) {
+    loggerUtils.error(
+      `mongoUtils :: getConnection :: Error getting connection from MongoDB :: ${error}`
     );
     throw error;
   }
