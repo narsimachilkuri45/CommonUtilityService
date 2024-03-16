@@ -1,4 +1,4 @@
-import { Pool, PoolConfig, QueryResult } from "pg";
+import { Pool, PoolConfig, QueryConfig, QueryResult } from "pg";
 import {
   getStringEnvVariableOrDefault,
   getBooleanEnvVariableOrDefault,
@@ -44,16 +44,15 @@ const postgresConfig: PoolConfig = {
 const pool = new Pool(postgresConfig);
 
 export async function query<T extends QueryResult = any>(
-  text: string,
-  values?: any[]
+  query: QueryConfig
 ): Promise<QueryResult<T>> {
   try {
     const start = Date.now();
-    const result = await pool.query<T>(text, values);
+    const result = await pool.query<T>(query);
     const duration = Date.now() - start;
     loggerUtils.debug(
-      `postgresUtils :: query :: Query executed in ${duration}ms :: ${text}`,
-      values
+      `postgresUtils :: query :: Query executed in ${duration}ms :: ${query.text}`,
+      query.values
     );
     return result;
   } catch (error) {
@@ -92,7 +91,9 @@ export async function closePool(): Promise<void> {
   }
 }
 
-export async function runMigrations(): Promise<void> {
+export async function runMigrations<
+  T extends QueryResult = any
+>(): Promise<void> {
   try {
     const migrationPath = getStringEnvVariable(
       "COMMON_POSTGRES_MIGRATION_PATH"
@@ -103,8 +104,8 @@ export async function runMigrations(): Promise<void> {
       for (const file of files) {
         const filePath = path.join(migrationPath, file);
         const sql = fs.readFileSync(filePath, "utf-8");
-        console.log(sql);
-        await query(sql);
+
+        await pool.query<T>(sql);
 
         loggerUtils.debug(
           `postgresUtils :: runMigrations :: Migrated: ${filePath}`
