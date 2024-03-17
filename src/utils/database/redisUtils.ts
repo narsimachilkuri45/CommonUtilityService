@@ -83,9 +83,9 @@ readRedisReplicaClient.on("error", (error) => {
 
 const addPrefix = (key: string) => `${getPrefixKey()}${key}`;
 
-export async function setKey(key: string, value: string, expiry: number) {
+export async function setKey(key: string, value: string, expiry: number = 0) {
   try {
-    if (expiry) {
+    if (expiry > 0) {
       await primaryRedisClient.setEx(addPrefix(key), expiry, value);
     } else {
       await primaryRedisClient.set(addPrefix(key), value);
@@ -148,9 +148,10 @@ export async function delKey(pattern: string) {
   }
 }
 
-export async function lPushKey(key: string, value: string) {
+export async function lPushKey(key: string, value: string, expiry: number = 0) {
   try {
-    return await primaryRedisClient.lPush(addPrefix(key), value);
+    await primaryRedisClient.lPush(addPrefix(key), value);
+    if (expiry > 0) await primaryRedisClient.expire(addPrefix(key), expiry);
   } catch (error) {
     loggerUtils.error(
       `redisUtils :: Error pushing to Redis list with key: ${key}, Error :: ${error}`
@@ -159,13 +160,18 @@ export async function lPushKey(key: string, value: string) {
   }
 }
 
-export async function incrementKey(key: string, threshold: number = 0) {
+export async function incrementKey(
+  key: string,
+  threshold: number = 0,
+  expiry: number = 0
+) {
   try {
     if (threshold != 0) {
-      return await primaryRedisClient.incrBy(addPrefix(key), threshold);
+      await primaryRedisClient.incrBy(addPrefix(key), threshold);
     } else {
-      return await primaryRedisClient.incr(addPrefix(key));
+      await primaryRedisClient.incr(addPrefix(key));
     }
+    if (expiry > 0) await primaryRedisClient.expire(addPrefix(key), expiry);
   } catch (error) {
     loggerUtils.error(
       `redisUtils :: Error Incrementing from Redis with key: ${key}, Error :: ${error}`
@@ -217,10 +223,12 @@ export async function lRangeKey(key: string, start: number, stop: number) {
 export async function hIncrbyKey(
   key: string,
   field: string,
-  increment: number
+  increment: number,
+  expiry: number = 0
 ) {
   try {
-    return await primaryRedisClient.hIncrBy(addPrefix(key), field, increment);
+    await primaryRedisClient.hIncrBy(addPrefix(key), field, increment);
+    if (expiry > 0) await primaryRedisClient.expire(addPrefix(key), expiry);
   } catch (error) {
     loggerUtils.error(
       `redisUtils :: Error incrementing field in Redis hash with key: ${key}, Error :: ${error}`
@@ -229,9 +237,15 @@ export async function hIncrbyKey(
   }
 }
 
-export async function hSetKey(key: string, field: string, value: number) {
+export async function hSetKey(
+  key: string,
+  field: string,
+  value: number,
+  expiry: number = 0
+) {
   try {
-    return await primaryRedisClient.hSet(addPrefix(key), field, value);
+    await primaryRedisClient.hSet(addPrefix(key), field, value);
+    if (expiry > 0) await primaryRedisClient.expire(addPrefix(key), expiry);
   } catch (error) {
     loggerUtils.error(
       `redisUtils :: Error Setting field in Redis hash with key: ${key}, Error :: ${error}`
