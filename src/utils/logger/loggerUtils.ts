@@ -54,4 +54,26 @@ const loggerUtils = winston.createLogger({
   transports: transportsArray,
 });
 
-export { loggerUtils };
+function apiLogger(req: any, res: any, next: any) {
+  const { method, url, body, params, query } = req;
+
+  let logMessage = `loggerUtils :: API Request :: Method ${method} :: Request URI ${url}`;
+
+  if (body) {
+    logMessage += ` :: Body ${JSON.stringify(body)}`;
+  }
+
+  if (params && Object.keys(params).length > 0) {
+    logMessage += ` :: Path Params ${JSON.stringify(params)}`;
+  }
+
+  if (query && Object.keys(query).length > 0) {
+    logMessage += ` :: Query Params ${JSON.stringify(query)}`;
+  }
+
+  loggerUtils.info(logMessage);
+
+  next();
+}
+
+export { loggerUtils, apiLogger };

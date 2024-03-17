@@ -229,6 +229,28 @@ export async function hIncrbyKey(
   }
 }
 
+export async function hSetKey(key: string, field: string, value: number) {
+  try {
+    return await primaryRedisClient.hSet(addPrefix(key), field, value);
+  } catch (error) {
+    loggerUtils.error(
+      `redisUtils :: Error Setting field in Redis hash with key: ${key}, Error :: ${error}`
+    );
+    throw error;
+  }
+}
+
+export async function hDelKey(key: string, field: string) {
+  try {
+    return await primaryRedisClient.hDel(addPrefix(key), field);
+  } catch (error) {
+    loggerUtils.error(
+      `redisUtils :: Error Deleting field in Redis hash with key: ${key}, Error :: ${error}`
+    );
+    throw error;
+  }
+}
+
 export async function hGetallKey(key: string) {
   try {
     return (
