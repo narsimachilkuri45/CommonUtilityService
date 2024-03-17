@@ -25,6 +25,10 @@ export async function connect(): Promise<Mongoose> {
         "COMMON_MONGODB_DATABASE",
         "admin"
       ),
+      authSource: envUtils.getStringEnvVariableOrDefault(
+        "COMMON_MONGODB_AUTH_SOURCE",
+        "admin"
+      ),
     };
 
     const username = envUtils.getStringEnvVariable("COMMON_MONGODB_USERNAME");
